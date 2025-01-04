@@ -1,0 +1,151 @@
+{% extends "main/base.html" %}
+{% block title %}
+    Verified Video Detection
+{% endblock %}
+{% block content %}
+<div class="video-content">
+    <h2>Verified Video Detection</h2>
+    <p style="text-align: justify;">
+        Welcome to the verified video detection section. This tool allows you to check whether a video contains manipulations or verify its authenticity using advanced detection techniques.
+    </p>
+
+    <h3>Instructions</h3>
+    <ol style="text-align: justify;">
+        <li><strong>Select a File:</strong> Click the "Choose File" button and select the video or image file you wish to verify.</li>
+        <li><strong>Start Verification:</strong> Click the "Check" button to process the file.</li>
+        <li><strong>View Results:</strong> After processing, the results will be displayed below.</li>
+    </ol>
+</div>
+
+<div class="left-aligned-content">
+    <form action="" method="post" enctype="multipart/form-data" class="styled-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Check</button>
+    </form>
+
+    <form action="" method="post" class="clear-form">
+        {% csrf_token %}
+        <button type="submit" name="clear" class="clear-button">Clear</button>
+    </form>
+</div>
+
+{% if result %}
+<div class="result-{% if result.detection_result == 'REAL' %}real{% else %}false{% endif %}">
+    <h2>Detection Result</h2>
+    <p>Prediction: {{ result.detection_result }}</p>
+</div>
+{% endif %}
+
+<style>
+    .result-real {
+        width: 600px;
+        height: 80px;
+        margin: 20px 0;
+        background-color: rgba(10, 230, 1, 0.1);
+        color: green;
+        border: 1px solid green;
+        padding: 10px;
+        box-shadow: 4px 4px 4px green;
+        border-radius: 5px;
+        text-align: center;
+    }
+    .result-false {
+        width: 600px;
+        height: 80px;
+        margin: 20px 0;
+        background-color: rgba(240, 1, 1, 0.1);
+        color: red;
+        border: 1px solid red;
+        padding: 10px;
+        box-shadow: 4px 4px 4px red;
+        border-radius: 5px;
+        text-align: center;
+    }
+    .styled-form {
+        width: 400px;
+        margin-bottom: 10px; /* Ensure space between forms */
+        background-color: aliceblue;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: left;
+    }
+    .styled-form label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        color: #333;
+    }
+    .styled-form input[type="text"],
+    .styled-form input[type="file"] {
+        width: 100%;
+        height: 40px;
+        margin-bottom: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    .styled-form button {
+        width: 75px;
+        padding: 5px;
+        background-color: #f0f8ff;
+        color: #007BFF;
+        border: 1px solid #007BFF;
+        border-radius: 7px;
+        cursor: pointer;
+    }
+    .styled-form button:hover {
+        background-color: #007BFF;
+        color: #f0f8ff;
+        transition: all 0.3s ease;
+    }
+    .clear-form {
+        margin-top: 10px;
+    }
+    .clear-button {
+        width: 75px;
+        padding: 5px;
+        background-color: #f0f8ff;
+        color: #FF5733;
+        border: 1px solid #FF5733;
+        border-radius: 7px;
+        cursor: pointer;
+    }
+    .clear-button:hover {
+        background-color: #FF5733;
+        color: #f0f8ff;
+        transition: all 0.3s ease;
+    }
+    .video-content {
+        width: 100%;
+        padding: 20px;
+        background-color: #f0f8ff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+        line-height: 1.6;
+    }
+    .video-content h2 {
+        color: #007BFF;
+        margin-bottom: 15px;
+        font-family: 'Arial', sans-serif;
+    }
+    .video-content h3 {
+        margin-top: 20px;
+        color: #333;
+    }
+    .video-content p {
+        margin: 10px 0;
+    }
+    .video-content ol {
+        margin-left: 20px;
+        margin-bottom: 20px;
+    }
+    .left-aligned-content {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; /* Align child elements to the left */
+        margin-left: 20px;
+    }
+</style>
+{% endblock %}

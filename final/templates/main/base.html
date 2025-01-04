@@ -1,0 +1,153 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Deepfake Detection{% endblock %}</title>
+    <script src="{% static 'js/fetch_results.js' %}"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .top-bar {
+            width: 100%;
+            height: 100px;
+            background-image: url("{% static 'assets/header.jpg' %}");
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .top-bar .title h1 {
+            font-family:'Times New Roman',serif;
+            color: white;
+        }
+        .side-bar {
+            width: 200px;
+            height: 100%;
+            background-color: #f4f4f4;
+            padding: 10px;
+            top: 100px;
+            left: 0;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .side-bar a {
+            text-decoration: none;
+            color: #000;
+            padding: 10px;
+            background-color: #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .side-bar a:hover {
+            color: #007BFF;
+            background-color: #ccc;
+        }
+        .content{
+            margin-left: 250px;
+        }
+        .content .home-content{
+            padding: 20px;
+            background-color:#f0f8ff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: auto;
+            line-height: 1.6;
+        }
+        .home-content h2 {
+            color: #007BFF;
+            margin-bottom: 15px;
+            font-family: 'Arial', sans-serif;
+        }
+        .home-content h3 {
+            margin-top: 20px;
+            color: #333;
+        }
+        .home-content p {
+            margin: 10px 0;
+        }
+        .home-content ul, .home-content ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        .side-bar .home-link{
+            background-color: #007BFF;
+            color:#f0f8ff;
+        }
+        .side-bar .video-link{
+            background-color:#f0f8ff;
+            color: #007BFF;
+        }
+        .side-bar .stream-link{
+            background-color:#f0f8ff;
+            color: #007BFF;
+        }
+        /* New styles for the View History link */
+        .side-bar .history-link {
+            background-color: #f0f8ff;
+            color: #007BFF;
+        }
+
+        .side-bar .history-link:hover {
+            color: #0056b3;
+            background-color: #ccc;
+        }
+
+        /* New styles for the Verified Videos link */
+        .side-bar .verified-link {
+            background-color: #f0f8ff;
+            color: #007BFF;
+        }
+
+        .side-bar .verified-link:hover {
+            color: #0056b3;
+            background-color: #ccc;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="title">
+            <h1>DEEPFAKE DETECTION PORTAL</h1>
+        </div>
+    </div>
+    <div class="side-bar">
+        <a href="{% url 'home' %}" title="Deepfake Detection Portal" class="home-link">Home</a>
+        <a href="{% url 'video' %}" title="Analyze Deepfake Videos" class="video-link">Video</a>
+        <a href="{% url 'stream' %}" title="Live Stream Analysis" class="stream-link">Live Stream</a>
+        <a href="{% url 'history' %}" title="View Detection History" class="history-link">View History</a>
+        <a href="{% url 'real' %}" title="Verified Videos" class="verified-link">Verified Videos</a>
+    </div>
+    <div class="content">
+        {% block content %}
+        <div class="home-content">
+            <h2>Welcome to the Deepfake Detection Portal</h2>
+            <p>
+                The rise of deepfake technology has brought incredible advancements in media creation but also significant challenges in distinguishing real from manipulated content. Our portal provides tools and resources to help individuals, organizations, and researchers detect and analyze deepfake content.
+            </p>
+            
+            <h3>Why Deepfake Detection Matters</h3>
+            <ul>
+                <li><strong>Combating Misinformation:</strong> Deepfakes can be used to spread false information, creating confusion and eroding trust.</li>
+                <li><strong>Protecting Privacy:</strong> Deepfakes can manipulate videos to harm individuals or tarnish reputations.</li>
+                <li><strong>Ensuring Authenticity:</strong> Verifying the authenticity of media is crucial in today's digital age.</li>
+            </ul>
+    
+            <h3>What You Can Do Here</h3>
+            <ol>
+                <li><strong>Analyze Videos:</strong> Upload video files to detect potential deepfake manipulations.</li>
+                <li><strong>Evaluate Live Streams:</strong> Provide YouTube link of a live stream to detect potential deepfake manipulations.</li>
+            </ol>
+        </div>
+        {% endblock %}
+    </div>
+</body>
+</html>

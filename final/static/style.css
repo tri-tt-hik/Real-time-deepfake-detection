@@ -1,0 +1,22 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+.top-bar {
+    width : 100%;
+    height: 100px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display : flex;
+    align-items: center;
+}
+.top-bar .title {
+    text-align: center  ;         /* Set a height for the container */
+}

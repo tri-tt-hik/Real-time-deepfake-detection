@@ -1,0 +1,290 @@
+{% extends "main/base.html" %}
+{% load static %}
+{% block title %}
+    Analyzing Video
+{% endblock %}
+{% block content %}
+    <div class="stream-content">
+        <h2>Upload and Analyze YouTube Stream</h2>
+        <p>In this section, you can input the URL of a YouTube stream, and our system will perform deepfake detection on the video. Please ensure the video is accessible and a valid stream URL.</p>
+
+        <h3>How to Use This Tool</h3>
+        <ol>
+            <li><strong>Enter Stream URL:</strong> Paste the YouTube stream URL into the provided field to submit the stream for analysis.</li>
+            <li><strong>Submit for Detection:</strong> After entering the URL, click the "Check" button to begin the deepfake detection process.</li>
+            <li><strong>View Results:</strong> Once the analysis is complete, the portal will display the results, including the likelihood of deepfake manipulation, confidence level, and any relevant details.</li>
+        </ol>
+    </div>
+    
+    <form action="" method="post" enctype="multipart/form-data" class="styled-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Check</button>
+    </form>
+    
+    <div class="action-buttons">
+        <button id="stop-button" class="stop-form">Stop</button>
+        <form action="" method="post" class="clear-form">
+            {% csrf_token %}
+            <button type="submit" name="clear">Clear</button>
+        </form>
+    </div>
+    
+    <iframe width="560" height="315" src="{{ embed }}" frameborder="0" allowfullscreen></iframe>
+    
+    <div id="results">
+        <h3>Detection Results</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Segment</th>
+                    <th>Prediction</th>
+                    <th>Confidence</th>
+                </tr>
+            </thead>
+            <tbody id="results-body">
+                <!-- Results will be appended here -->
+            </tbody>
+        </table>
+    </div>
+    
+    <script src="{% static 'js/fetch_results.js' %}"></script>
+    
+    <script>
+        let stopPolling = false;
+
+        function fetchResults() {
+            if (stopPolling) return;
+
+            fetch('/fetch-results/')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.stop) {
+                        stopPolling = true;
+                        console.log("Polling stopped by server.");
+                        return;
+                    }
+
+                    const resultsBody = document.getElementById('results-body');
+                    resultsBody.innerHTML = ''; // Clear previous results
+
+                    data.results.forEach(entry => {
+                        const row = `<tr>
+                            <td>${entry.Second || 'N/A'}</td>
+                            <td>${entry.final?.prediction || 'N/A'}</td>
+                            <td>${entry.final?.Confidence ? entry.final.Confidence.toFixed(2) + '%' : 'N/A'}</td>
+                        </tr>`;
+                        resultsBody.innerHTML += row;
+                    });
+                    console.log("Results updated.");
+                    setTimeout(fetchResults, 1000); // Poll every second
+                })
+                .catch(error => console.error('Error fetching results:', error));
+        }
+
+        // Function to stop polling
+        function stopFetchResults() {
+            stopPolling = true; // Set the stopPolling flag to true
+            console.log("Polling has been stopped.");
+            // Optionally, you can also send a request to the server to stop processing
+            fetch('/stream/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token
+                },
+                body: JSON.stringify({ stop: true }) // Send stop request
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchResults();
+
+            // Attach event listener to the stop button
+            const stopButton = document.getElementById('stop-button');
+            if (stopButton) {
+                stopButton.addEventListener('click', stopFetchResults);
+            }
+        });
+    </script>
+    "{{final_prediction.FinalPrediction.label}}""
+
+    <style>
+        .action-buttons .stop-form{
+            width: 75px;
+            margin-top: 10px;
+            margin-left: 20px;
+            padding: 5px;
+            background-color: #f0f8ff;
+            color: #007BFF;
+            border-color: #007BFF;
+            border-width: 1px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+        .action-buttons .stop-form:hover {
+            background-color: #007BFF;
+            color: #f0f8ff;
+        }
+        /* Your existing styles here */
+        iframe {
+            width: 600px;
+            height: 350px;
+            border-color: #333;
+            border-radius: 10px;
+            margin-top: 5px;
+            margin-left: 150 px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Remove gaps between borders */
+            margin: 20px 0; /* Add spacing above and below the table */
+        }
+
+        th, td {
+            padding: 12px 15px; /* Add padding inside table cells */
+            text-align: left; /* Align text to the left */
+            border: 1px solid #ddd; /* Light gray border around cells */
+        }
+
+        th {
+            background-color: #f4f4f4; /* Light gray background for table headers */
+            font-weight: bold; /* Make header text bold */
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9; /* Light gray background for even rows */
+        }
+
+        tr:hover {
+            background-color: #f1f1f1; /* Slightly darker background when hovering over a row */
+        }
+
+        tbody tr:last-child {
+            border-bottom: 2px solid #ddd; /* Add a thicker bottom border to the last row */
+        }
+
+        h3 {
+            margin-bottom: 10px;
+            font-size: 24px; /* Larger font size for the heading */
+            color: #333; /* Darker color for better contrast */
+        }
+        
+        .clear-form button {
+            width: 75px;
+            margin-top: 10px;
+            margin-left: 20px;
+            padding: 5px;
+            background-color: #f0f8ff;
+            color: #007BFF;
+            border-color: #007BFF;
+            border-width: 1px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+        .clear-form button:hover {
+            background-color: #007BFF;
+            color: #f0f8ff;
+        }
+        .styled-form {
+            width: 400px;
+            margin-left: 0px;
+            margin-top: 20px;
+            background-color: aliceblue;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .styled-form label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .styled-form input[type="text"],
+        .styled-form input[type="url"] {
+            width: 100%;
+            height: 40px;
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .styled-form button {
+            width: 75px;
+            padding: 5px;
+            background-color: #f0f8ff;
+            color: #007BFF;
+            border-color: #007BFF;
+            border-width: 1px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+        .styled-form button:hover {
+            background-color: #007BFF;
+            color: #f0f8ff;
+            transition: all;
+        }
+        .styled-form input:focus {
+            border-color: #007BFF;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        .stream-content {
+            width: 100%;
+            padding: 10px;
+            background-color: #f0f8ff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: auto;
+            line-height: 1.6;
+        }
+        .stream-content h2 {
+            color: #007BFF;
+            margin-bottom: 15px;
+            font-family: 'Arial', sans-serif;
+        }
+        .stream-content h3 {
+            margin-top: 20px;
+            color: #333;
+        }
+        .stream-content p {
+            margin: 10px 0;
+        }
+        .stream-content ol {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+        .stream-content .action-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+        }
+        .stream-content .upload-button,
+        .stream-content .analyze-button {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: white;
+            background-color: #007BFF;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .stream-content .upload-button:hover,
+        .stream-content .an html
+        .stream-content .analyze-button:hover {
+            background-color: #0056b3;
+        }
+        
+        .side-bar .stream-link {
+            background-color: #007BFF;
+            color: #f0f8ff;
+        }
+        .side-bar .home-link {
+            background-color: #f0f8ff;
+            color: #007BFF;
+        }
+        .side-bar .video-link {
+            background-color: #f0f8ff;
+            color: #007BFF;
+        }
+    </style>
+{% endblock %}
