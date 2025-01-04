@@ -48,34 +48,25 @@ Access the application at http://127.0.0.1:8000 in your browser.
 
 **Video Detection**
 
-Navigate to the "Video Detection" section.
-
-Upload a video file (supported formats: .mp4, .avi, .mov, etc.).
-
-Click "Analyze" to view the detection result and confidence score.
+1.Navigate to the "Video Detection" section.
+2.Upload a video file (supported formats: .mp4, .avi, .mov, etc.).
+3.Click "Analyze" to view the detection result and confidence score.
 
 
 **Live Stream Detection**
 
-Navigate to the "Live Stream Detection" section.
-
-Paste the YouTube live stream URL.
-
-Start the analysis to detect real or deepfake segments in real-time.
-
+1.Navigate to the "Live Stream Detection" section.
+2.Paste the YouTube live stream URL.
+3.Start the analysis to detect real or deepfake segments in real-time.
 
 **Blockchain Integration**
-
 If the confidence score exceeds 90%, the video and its prediction results are securely stored in the blockchain for future verification and integrity.
 
 **Project Architecture**
 
 **Frontend:** User interface built with HTML, CSS, and JavaScript.
-
 **Backend:** Python/Django for processing and serving requests.
-
 **AI Model:** Deep learning-based model for real-time deepfake detection.
-
 **Blockchain:** Immutable storage of videos and results using a private/public blockchain framework.
 
 **Requirements**
